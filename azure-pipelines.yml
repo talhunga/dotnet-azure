@@ -1,19 +1,47 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Optional: custom versioning of build numbers like 1.0.45, 1.0.46, etc.
+name: 1.0.$(Rev:.r)
 
 trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-24.04'
+
+variables:
+  buildConfiguration: 'Release'
+  packageName: 'helloworld'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+# installs the .net sdk
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '9.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 
+# ensure dependencies
+- script: dotnet restore
+  displayName: 'Restore dependencies'
+
+# build the project
+- script: dotnet build --configuration $(buildConfiguration) --no-restore
+  displayName: 'Build project'
+
+# Pack with dynamic version number based on the build number
 - script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    dotnet pack --configuration $(buildConfiguration) \
+                /p:PackageId=$(packageName) \
+                /p:PackageVersion=$(packageName)-$(Build.BuildId) \
+                --no-build \
+                --output $(Build.ArtifactStagingDirectory)
+  displayName: 'Pack NuGet package: helloworld-$(Build.BuildId)'
+
+# Push the package to Azure Artifacts feed
+#- task: NuGetCommand@2
+#  inputs:
+#    command: 'push'
+#    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+#    publishVstsFeed: '<your-feed-id-or-name>'  # Replace this with your feed
+#    allowPackageConflicts: true
+#  displayName: 'Publish package to Azure Artifacts'
+
