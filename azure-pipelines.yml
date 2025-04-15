@@ -30,4 +30,5 @@ steps:
                 --output 'helloworld-artifacts'
   displayName: 'Pack NuGet package: helloworld-1.0.$(Build.BuildId)'
 
+- script: dotnet nuget push --source "hello-world" --api-key fakekey
 
