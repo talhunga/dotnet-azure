@@ -34,7 +34,7 @@ steps:
   displayName: 'Push NuGet package to Azure Artifacts'
   inputs:
     command: 'push'
-    publishVstsFeed: 'hello-world'
+    publishVstsFeed: 'dotnet-azure/hello-world'
     packagesToPush: 'helloworld-artifacts/*.nupkg'
     allowPackageConflicts: true
 
