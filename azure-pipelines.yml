@@ -1,23 +1,15 @@
-# Optional: custom versioning of build numbers like 1.0.45, 1.0.46, etc.
 name: 1.0.$(Rev:.r)
 
 trigger:
 - master
 
+# ✅ Use self-hosted agent pool
 pool:
-  vmImage: 'ubuntu-24.04'
+  name: self-hosted-pool  # Replace with your actual pool name if different
 
 variables:
   buildConfiguration: 'Release'
   packageName: 'helloworld'
-
-steps:
-# installs the .net sdk
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '9.x'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
 
 # ensure dependencies
 - script: dotnet restore
@@ -33,15 +25,6 @@ steps:
                 /p:PackageId=$(packageName) \
                 /p:PackageVersion=$(packageName)-$(Build.BuildId) \
                 --no-build \
-                --output $(Build.ArtifactStagingDirectory)
+                --output 'helloworld-artifacts'
   displayName: 'Pack NuGet package: helloworld-$(Build.BuildId)'
-
-# Push the package to Azure Artifacts feed
-#- task: NuGetCommand@2
-#  inputs:
-#    command: 'push'
-#    packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
-#    publishVstsFeed: '<your-feed-id-or-name>'  # Replace this with your feed
-#    allowPackageConflicts: true
-#  displayName: 'Publish package to Azure Artifacts'
 
