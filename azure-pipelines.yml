@@ -7,8 +7,12 @@ pool:
   name: default
 
 variables:
-  buildConfiguration: 'Release'
-  packageName: 'helloworld'
+  - name: buildConfiguration
+    value: 'Release'
+
+  - name: packageName
+    value: 'helloworld'
+
   - group: mysecrets
 
 steps:
