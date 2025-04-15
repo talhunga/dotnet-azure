@@ -10,7 +10,6 @@ variables:
   buildConfiguration: 'Release'
   packageName: 'helloworld'
 
-# ✅ Add this block:
 steps:
 
 # ensure dependencies
@@ -30,6 +29,6 @@ steps:
                 --output 'helloworld-artifacts'
   displayName: 'Pack NuGet package: helloworld-1.0.$(Build.BuildId)'
 
-- script: dotnet nuget push --source "hello-world" --api-key fakekey .
+- script: dotnet nuget push "helloworld-artifacts/*.nupkg" --source "hello-world" --api-key fakekey
   displayName: 'push project'
 
