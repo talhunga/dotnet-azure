@@ -9,9 +9,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   packageName: 'helloworld'
-
-variables:
-- group: mysecrets
+  - group: mysecrets
 
 steps:
 - script: dotnet restore
