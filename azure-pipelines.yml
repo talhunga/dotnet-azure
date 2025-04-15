@@ -25,8 +25,9 @@ steps:
 - script: |
     dotnet pack --configuration $(buildConfiguration) \
                 /p:PackageId=$(packageName) \
-                /p:PackageVersion=$(packageName)-$(Build.BuildId) \
+                /p:PackageVersion=1.0.$(Build.BuildId) \
                 --no-build \
                 --output 'helloworld-artifacts'
-  displayName: 'Pack NuGet package: helloworld-$(Build.BuildId)'
+  displayName: 'Pack NuGet package: helloworld-1.0.$(Build.BuildId)'
+
 
