@@ -1,4 +1,4 @@
-name: 1.0.$(Rev:.r)
+name: helloworld-1.0.$(Rev:.r)
 
 trigger:
 - master
@@ -9,6 +9,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   packageName: 'helloworld'
+- group: mysecrets
 
 steps:
 
@@ -29,6 +30,6 @@ steps:
                 --output 'helloworld-artifacts'
   displayName: 'Pack NuGet package: helloworld-1.0.$(Build.BuildId)'
 
-- script: dotnet nuget push "helloworld-artifacts/*.nupkg" --source "hello-world" --api-key fakekey
+- script: dotnet nuget push "helloworld-artifacts/*.nupkg" --source "hello-world" --api-key $(azureArtifactsPAT)
   displayName: 'push project'
 
