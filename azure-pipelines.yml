@@ -9,19 +9,17 @@ pool:
 variables:
   buildConfiguration: 'Release'
   packageName: 'helloworld'
+
+variables:
 - group: mysecrets
 
 steps:
-
-# ensure dependencies
 - script: dotnet restore
   displayName: 'Restore dependencies'
 
-# build the project
 - script: dotnet build --configuration $(buildConfiguration) --no-restore
   displayName: 'Build project'
 
-# Pack with dynamic version number based on the build number
 - script: |
     dotnet pack --configuration $(buildConfiguration) \
                 /p:PackageId=$(packageName) \
@@ -30,6 +28,8 @@ steps:
                 --output 'helloworld-artifacts'
   displayName: 'Pack NuGet package: helloworld-1.0.$(Build.BuildId)'
 
-- script: dotnet nuget push "helloworld-artifacts/*.nupkg" --source "hello-world" --api-key $(azureArtifactsPAT)
-  displayName: 'push project'
+- script: dotnet nuget push "helloworld-artifacts/*.nupkg" \
+          --source "hello-world" \
+          --api-key $(azureArtifactsPAT)
+  displayName: 'Push NuGet package to Azure Artifacts'
 
