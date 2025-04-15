@@ -30,8 +30,12 @@ steps:
                 --output 'helloworld-artifacts'
   displayName: 'Pack NuGet package: helloworld-1.0.$(Build.BuildId)'
 
-- script: dotnet nuget push "helloworld-artifacts/*.nupkg" \
-          --source "hello-world" \
-          --api-key $(azureArtifactsPAT)
+- task: DotNetCoreCLI@2
   displayName: 'Push NuGet package to Azure Artifacts'
+  inputs:
+    command: 'push'
+    publishVstsFeed: 'hello-world'
+    packagesToPush: 'helloworld-artifacts/*.nupkg'
+    allowPackageConflicts: true
+
 
