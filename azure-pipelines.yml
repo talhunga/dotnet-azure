@@ -11,6 +11,9 @@ variables:
   buildConfiguration: 'Release'
   packageName: 'helloworld'
 
+# ✅ Add this block:
+steps:
+
 # ensure dependencies
 - script: dotnet restore
   displayName: 'Restore dependencies'
