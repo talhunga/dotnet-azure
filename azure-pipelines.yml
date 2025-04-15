@@ -3,9 +3,8 @@ name: 1.0.$(Rev:.r)
 trigger:
 - master
 
-# ✅ Use self-hosted agent pool
 pool:
-  name: self-hosted-pool  # Replace with your actual pool name if different
+  name: default
 
 variables:
   buildConfiguration: 'Release'
