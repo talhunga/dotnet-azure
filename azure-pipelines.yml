@@ -4,7 +4,7 @@ trigger:
 - master
 
 pool:
-  name: default
+  name: default  # your self-hosted agent pool
 
 variables:
   - name: buildConfiguration
@@ -16,11 +16,21 @@ variables:
   - group: mysecrets
 
 steps:
+
+# Prepare SonarQube analysis
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: 'sonarqube-server'
+    projectKey: 'dotnet-helloworld'
+
 - script: dotnet restore
   displayName: 'Restore dependencies'
 
 - script: dotnet build --configuration $(buildConfiguration) --no-restore
   displayName: 'Build project'
+
+# run SonarQube Analysis
+- task: SonarQubeAnalyze@5
 
 - script: |
     dotnet pack --configuration $(buildConfiguration) \
@@ -30,6 +40,12 @@ steps:
                 --output 'helloworld-artifacts'
   displayName: 'Pack NuGet package: helloworld-1.0.$(Build.BuildId)'
 
+# publish the result to SonarQube
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '300'
+
+# push to azure artifacts
 - task: DotNetCoreCLI@2
   displayName: 'Push NuGet package to Azure Artifacts'
   inputs:
@@ -37,5 +53,4 @@ steps:
     publishVstsFeed: 'dotnet-azure/hello-world'
     packagesToPush: 'helloworld-artifacts/*.nupkg'
     allowPackageConflicts: true
-
 
